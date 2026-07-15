@@ -1,20 +1,27 @@
 # c3-pico — minimalist ESP32-C3 dev board
 
-> **Status: work in progress.** Schematic is complete and ERC-clean (0 errors,
-> 0 warnings — [hardware/erc.rpt](hardware/erc.rpt)), and the header pinout is
-> frozen (matches the module's physical pin order for a 1:1 fan-out). Board
-> placement is done — antenna keep-out at the top edge, USB-C on the bottom edge,
-> 1.0" header rows to straddle a breadboard. Routing is in progress: the USB-C
-> differential-pair escape is being finished interactively. Gerbers land here once
-> DRC is clean. Fully finished, fabrication-ready sibling project:
-> [sht45-qt](https://github.com/FrancoSpitale/sht45-qt).
-
 A no-frills ESP32-C3 development board in **KiCad 9**: USB-C with native USB,
 3.3 V LDO, BOOT/RESET buttons and every usable GPIO on two breadboard-friendly
 0.1" rows. Designed to be the board you actually reach for — nothing on it that
 a blinky-to-production bring-up doesn't need.
 
-![schematic](docs/schematic.svg)
+| Top | Bottom |
+|---|---|
+| ![top](docs/board-top.png) | ![bottom](docs/board-bottom.png) |
+
+Schematic: [docs/schematic.svg](docs/schematic.svg) · Source: [hardware/](hardware/)
+
+## Specs
+
+| | |
+|---|---|
+| MCU | ESP32-C3-WROOM-02-N4 (RIS-V, Wi-Fi + BLE, 4 MB flash) |
+| USB | USB-C, native USB-Serial-JTAG (no bridge IC) |
+| Power | USB 5 V → AP2112K-3.3 LDO (600 mA) |
+| I/O | 13 GPIO on 2 × 1×9 headers, 1.0" apart (breadboard) |
+| Board | 28.4 × 51.5 mm, 2-layer, 1.6 mm FR-4 |
+| Buttons | BOOT (IO9) + RESET (EN) |
+| LEDs | power (green) + user (IO8, blue) |
 
 ## Design decisions
 
@@ -42,9 +49,15 @@ enough to ignore in normal use.
 **EN with RC delay.** 10 k pull-up + 1 µF on EN gives a clean power-on ramp and
 a proper RESET button without a supervisor chip.
 
-## Pinout (planned)
+**Antenna overhang + bottom ground plane.** The module hangs off the top edge so
+its PCB antenna clears the board copper (with a copper keep-out under the
+antenna footprint as a belt-and-suspenders measure). The stackup is the classic
+2-layer arrangement — signals and power on top, an unbroken ground plane on the
+bottom — so every top trace has a clean return path directly beneath it.
 
-| Left | Right |
+## Pinout
+
+| Left (J2) | Right (J3) |
 |---|---|
 | 3V3 | IO0 |
 | EN | IO1 |
@@ -56,21 +69,39 @@ a proper RESET button without a supervisor chip.
 | IO9 (BOOT) | 5V |
 | GND | GND |
 
-Header order mirrors the module's physical pin order — layout fans out 1:1
-without crossings.
+Header order mirrors the module's physical pin order, so the layout fans out
+1:1 with no crossings.
 
-## Roadmap
+## Fabrication
 
-- [x] Schematic, ERC-clean
-- [x] Header pinout frozen (1:1 with module pin order)
-- [x] Component placement (antenna keep-out, USB-C bottom edge, 1.0" breadboard rows)
-- [ ] Finish routing (USB-C differential escape) + DRC-clean
-- [ ] JLCPCB gerbers/BOM/CPL
-- [ ] First fab run + bring-up notes
+`fabrication/c3-pico-gerbers-jlcpcb.zip` uploads directly to JLCPCB: 2 layers,
+1.6 mm, ENIG recommended (fine-pitch module pads). `c3-pico-bom.csv` and
+`c3-pico-pos.csv` are ready for the assembly service — add LCSC part numbers at
+order time. The module and USB-C are the only fine-pitch parts; everything else
+is 0603 or SOT-23.
+
+## Verification
+
+- ERC: 0 errors, 0 warnings ([hardware/erc.rpt](hardware/erc.rpt))
+- DRC: 0 errors, 0 unconnected, 0 clearance/short/edge violations, schematic
+  parity OK ([hardware/drc.rpt](hardware/drc.rpt)). One remaining info-level
+  notice — U1's library footprint differs from stock because the module's
+  antenna silkscreen was trimmed where it overhangs the board edge (deliberate).
+- Routing: placed by hand for a clean fan-out, autorouted with
+  [freerouting](https://github.com/freerouting/freerouting), then hand-verified.
+
+## Repository layout
+
+```
+hardware/     KiCad 9 project (schematic, PCB, ERC/DRC reports)
+fabrication/  Gerbers zip (JLCPCB), BOM, pick & place
+docs/         Renders and schematic SVG
+```
 
 ## License
 
-MIT — see [LICENSE](LICENSE). Hardware provided as-is, no warranty.
+MIT — see [LICENSE](LICENSE). Hardware provided as-is, no warranty; review before
+fabricating. Not yet fabricated — if you build one, open an issue with results.
 
 ---
-*Franco Spitale, 2026.*
+*Franco Spitale, 2026. Rev 1.0.*

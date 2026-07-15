@@ -1,0 +1,13 @@
+** Drc report for c3-routed.kicad_pcb **
+** Created on 2026-07-15T11:01:35-0300 **
+
+** Found 1 DRC violations **
+[lib_footprint_mismatch]: La huella 'ESP32-C3-WROOM-02' no coincide con la copia en la biblioteca 'RF_Module'.
+    Anulación local; warning
+    @(112,7000 mm, 116,0000 mm): Huella U1
+
+** Found 0 unconnected pads **
+
+** Found 0 Footprint errors **
+
+** End of Report **
