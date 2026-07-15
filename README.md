@@ -1,9 +1,13 @@
 # c3-pico — minimalist ESP32-C3 dev board
 
 > **Status: work in progress.** Schematic is complete and ERC-clean (0 errors,
-> 0 warnings — [hardware/erc.rpt](hardware/erc.rpt)). 2-layer layout is next;
-> gerbers will land here once DRC is clean. Sibling project (finished, fabricated
-> files included): [sht45-qt](https://github.com/FrancoSpitale/sht45-qt).
+> 0 warnings — [hardware/erc.rpt](hardware/erc.rpt)), and the header pinout is
+> frozen (matches the module's physical pin order for a 1:1 fan-out). Board
+> placement is done — antenna keep-out at the top edge, USB-C on the bottom edge,
+> 1.0" header rows to straddle a breadboard. Routing is in progress: the USB-C
+> differential-pair escape is being finished interactively. Gerbers land here once
+> DRC is clean. Fully finished, fabrication-ready sibling project:
+> [sht45-qt](https://github.com/FrancoSpitale/sht45-qt).
 
 A no-frills ESP32-C3 development board in **KiCad 9**: USB-C with native USB,
 3.3 V LDO, BOOT/RESET buttons and every usable GPIO on two breadboard-friendly
@@ -42,14 +46,14 @@ a proper RESET button without a supervisor chip.
 
 | Left | Right |
 |---|---|
-| 3V3 | 5V |
-| EN | IO10 |
-| IO4 | IO20 (RX) |
-| IO5 | IO21 (TX) |
-| IO6 | IO3 |
-| IO7 | IO2 |
-| IO8 (LED) | IO1 |
-| IO9 (BOOT) | IO0 |
+| 3V3 | IO0 |
+| EN | IO1 |
+| IO4 | IO2 |
+| IO5 | IO3 |
+| IO6 | IO21 (TX) |
+| IO7 | IO20 (RX) |
+| IO8 (LED) | IO10 |
+| IO9 (BOOT) | 5V |
 | GND | GND |
 
 Header order mirrors the module's physical pin order — layout fans out 1:1
@@ -58,8 +62,10 @@ without crossings.
 ## Roadmap
 
 - [x] Schematic, ERC-clean
-- [ ] 2-layer layout (25.4 mm wide, 0.9" row spacing, antenna keepout at board edge)
-- [ ] DRC-clean + JLCPCB gerbers/BOM/CPL
+- [x] Header pinout frozen (1:1 with module pin order)
+- [x] Component placement (antenna keep-out, USB-C bottom edge, 1.0" breadboard rows)
+- [ ] Finish routing (USB-C differential escape) + DRC-clean
+- [ ] JLCPCB gerbers/BOM/CPL
 - [ ] First fab run + bring-up notes
 
 ## License
